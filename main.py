@@ -123,5 +123,5 @@ if __name__ == "__main__":
     #         type = input()
     
     # generate_guests(start_id, end_id, type)
-    generate_guests(0, 650, 1)
+    # generate_guests(0, 650, 0)
     
