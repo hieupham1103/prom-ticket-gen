@@ -36,8 +36,8 @@ def make_qrcode(id, code):
     
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("./font/RedditSans-VariableFont_wght.ttf",44)
-    draw.text((1100,75),id,font = font, fill = (0,0,0,255))
-    img.paste(code_img,(800,1680),code_img)
+    draw.text((1100,125),id,font = font, fill = (0,0,0,255))
+    img.paste(code_img,(850,1680),code_img)
     img.save(path)
     # img.show()
     print(f"{id} done!!")
@@ -81,7 +81,7 @@ def generate_guests(start_id, end_id, type = 0):
     with open('khach.csv', mode='w') as khach:
         khach_writer = csv.writer(khach, delimiter=',', lineterminator = '\n')
         for id in range(start_id, end_id + 1):
-            code = str(uuid.uuid4())[0:7]
+            code = str(uuid.uuid4())[0:8]
             while store_id.get(code):
                 print("same id, gen again")
                 code = str(uuid.uuid4())[0:7]
