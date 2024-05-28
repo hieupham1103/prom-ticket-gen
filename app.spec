@@ -2,8 +2,8 @@
 
 
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    ['app.py'],
+    pathex=['D:\\GAME AND WEBAPP\\PROM\\prom-ticket-gen\\venv\\Lib\\site-packages\\barcode'],
     binaries=[],
     datas=[],
     hiddenimports=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='main',
+    name='app',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

@@ -1,15 +1,15 @@
 import os
 import argparse
-import shutil
 from PIL import ImageOps, ImageDraw, ImageFont, Image
 from barcode import Code128
 from barcode.writer import ImageWriter 
+import shutil
 import csv
 import uuid
 
 OUTPUT_PATH = "./output/"
 
-def make_qrcode(id, code):
+def make_qrcode(base_path, id, code, id_pos = (0,0), id_size = 10, code_pos = (0,0), code_size = 1):
     id = "{:08d}".format(id)
     print(f"==Generate {id} - {code}==")
     code_img = Code128(code, writer=ImageWriter()).render()
@@ -24,23 +24,17 @@ def make_qrcode(id, code):
     width, height = code_img.size
     code_img = code_img.crop((25, 0, width - 20, height - 40))
     width, height = code_img.size
-    code_img = code_img.resize((round(1.8 * width), round(1.8 * height)))
+    code_img = code_img.resize((round(code_size * width), round(code_size * height)))
     
     
-    path = OUTPUT_PATH + f"{id}.png"
-    if os.path.isfile(path):
-        print("File đã có")
-        return
-    
-    img = Image.open("./template.png").convert("RGBA")
+    img = Image.open(base_path).convert("RGBA")
     
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("./font/RedditSans-VariableFont_wght.ttf",44)
-    draw.text((1100,125),id,font = font, fill = (0,0,0,255))
-    img.paste(code_img,(850,1680),code_img)
-    img.save(path)
-    # img.show()
-    print(f"{id} done!!")
+    font = ImageFont.truetype("./font/RedditSans-VariableFont_wght.ttf",id_size)
+    draw.text((id_pos[0],id_pos[1]),id,font = font, fill = (0,0,0,255))
+    img.paste(code_img,(code_pos[0],code_pos[1]),code_img)
+
+    return img
 
 def check_dup(file_path = "khach.csv"):
     store_id = {}
@@ -85,43 +79,12 @@ def generate_guests(start_id, end_id, type = 0):
             while store_id.get(code):
                 print("same id, gen again")
                 code = str(uuid.uuid4())[0:7]
-            make_qrcode(id, code)
+            make_qrcode(id, code, (1100,125), (850,1680))
             khach_writer.writerow([id, f"\"{code}\""])
             store_id[code] = True
     
     check_dup()
 
 
-
-if __name__ == "__main__":
-    # print("Số id bắt đầu:")
-    # start_id = input()
-    # while True:
-    #     try:
-    #         start_id = int(start_id)
-    #         break
-    #     except:
-    #         print("Thử lại, số id bắt đầu:")
-    #         start_id = input()
-    # print("Số id kết thúc:")
-    # end_id = input()
-    # while True:
-    #     try:
-    #         end_id = int(end_id)
-    #         break
-    #     except:
-    #         print("Thử lại, số id kết thúc:")
-    #         end_id = input()
-    # print("Bạn có muốn xóa sạch file đã cho có không (0: không; 1: có):")
-    # type = input()
-    # while True:
-    #     try:
-    #         type = int(type)
-    #         break
-    #     except:
-    #         print("Thử lại, bạn có muốn xóa sạch file đã cho có không (0: không; 1: có):")
-    #         type = input()
-    
-    # generate_guests(start_id, end_id, type)
-    generate_guests(0, 650, 0)
+# generate_guests(0, 0, 0)
     

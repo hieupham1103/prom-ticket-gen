@@ -4,27 +4,29 @@ import shutil
 
 OUTPUT_PATH = "./output_merge/"
 
-def merge(files = [], id = 0):
+def merge(files = [], id = 0, row = 2, col = 4):
     if len(files) == 0:
         return
     
     w, h = files[0].size
     
     
-    final_img = Image.new(mode="RGBA", size=(w * 2, h * 2))
+    final_img = Image.new(mode="RGBA", size=(w * col, h * row))
+    print((w, h))
+    print((col, row))
     x = 0
     y = 0
     for img in files:
         final_img.paste(img, (x,y), img)
         x += w
-        if x >= w * 2:
+        if x >= w * col:
             y += h
             x = 0
     
     final_img.save(OUTPUT_PATH + str(id) + ".png")
     print(f"{id} done!!")
 
-def init_merge():
+def init_merge(images_path = "./output/", row = 2, col = 4):
     if os.path.isdir(OUTPUT_PATH) == False:
         os.mkdir(OUTPUT_PATH)
     try:
@@ -37,14 +39,13 @@ def init_merge():
         pass
     lists = []
     count = 0
-    for root, dirs, files in os.walk("./output/"):
+    for root, dirs, files in os.walk(images_path):
         for f in files:
-            lists.append(Image.open("./output/" + f).convert("RGBA"))
+            lists.append(Image.open(images_path + f).convert("RGBA"))
             
-            if len(lists) == 4:
-                merge(lists, count)
+            if len(lists) == row * col:
+                merge(lists, count, row, col)
                 lists.clear()
                 count += 1
-        merge(lists, count)
+        merge(lists, count, row, col)
     
-init_merge()
